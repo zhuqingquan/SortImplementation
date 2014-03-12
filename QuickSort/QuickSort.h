@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <random>
 #include <Windows.h>
+#include <iterator>
 
 namespace zTools
 {
@@ -106,34 +107,60 @@ namespace AlgorithmsImp
 		QuickSort<ValueType, Comparer>(pArray, q+1, r);
 	}
 
-	//template<typename Iterator, typename Comparer>
-	//int partition(Iterator p, Iterator r, const Comparer& cmp)
-	//{
-	//	Iterator::diffrence_type
-	//	int pivot = rand(p,r+1);
-	//	ValueType x = pArray[pivot];
-	//	std::swap(pArray[pivot], pArray[r]);
-	//	int i = p-1;
-	//	for (int j=p; j<r; j++)
-	//	{
-	//		if(cmp(pArray[j],x))
-	//		{
-	//			i++;
-	//			std::swap(pArray[i], pArray[j]);
-	//		}
-	//	}
-	//	std::swap(pArray[i+1], pArray[r]);
-	//	return i+1;
-	//}
+	template<typename Iterator>
+	Iterator getPivot_helper(Iterator p, Iterator r, std::input_iterator_tag)
+	{
+		return r;
+	}
 
-	//template<typename Iterator, typename Comparer>
-	//void QuickSort(Iterator p, Iterator r)
-	//{
-	//	if(p>=r)	return;
-	//	int q = partition(p, r, Comparer());
-	//	QuickSort<Iterator, Comparer>(p, q-1);
-	//	QuickSort<Iterator, Comparer>(q+1, r);
-	//}
+	template<typename Iterator>
+	Iterator getPivot_helper(Iterator p, Iterator r, std::random_access_iterator_tag)
+	{
+		std::iterator_traits<Iterator>::difference_type distance = r-p;
+		if(distance<=0)
+			return r;
+		int dist = (int)distance;
+		int pivotDist = rand(0, dist);
+		return p+pivotDist;
+	}
+
+	template<typename Iterator>
+	Iterator getPivot(Iterator p, Iterator r)
+	{
+		return getPivot_helper(p, r, std::iterator_traits<Iterator>::iterator_category());
+	}
+
+	template<typename Iterator, typename Comparer>
+	Iterator partition(Iterator p, Iterator r, const Comparer& cmp)
+	{
+		Iterator pivot = getPivot(p, r);
+		std::swap(*(r), *pivot);
+		Iterator i = r;
+		for (Iterator j=p; j!=r; j++)
+		{
+			if(cmp(*j, *(r)))
+			{
+				i = i==r ? p : ++i;
+				std::swap(*i, *j);
+			}
+		}
+		if(i==r)
+			std::swap(*p, *r);
+		else
+			std::swap(*(i+1), *(r));
+		return i==r ? p : i+1;
+	}
+
+	template<typename Iterator, typename Comparer>
+	void QuickSort(Iterator p, Iterator r)
+	{
+		if(p>=r)	return;
+		Iterator q = zTools::AlgorithmsImp::partition<Iterator, Comparer>(p, r, Comparer());
+		if(p!=q)
+			QuickSort<Iterator, Comparer>(p, q-1);
+		if(q!=r)
+			QuickSort<Iterator, Comparer>(q+1, r);
+	}
 
 	template<typename ValueType, typename Comparer>
 	int partition_EquelRegion(ValueType pArray[], int p, int r, int* erBegin, int* erEnd, const Comparer& cmp)

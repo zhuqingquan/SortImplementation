@@ -87,6 +87,7 @@ void QuickSort_Increasing(int* pArray, int p, int r)
 	QuickSort_Increasing(pArray, q+1, r);
 }
 #endif
+#include <assert.h>
 
 int main(int argc, char* argv[])
 {
@@ -104,19 +105,52 @@ int main(int argc, char* argv[])
 	int testData4[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	int testData5[10] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 #ifdef USE_TEMPLATE
-	QuickSort<int, Comparer_ge<int>>(testData, 0, 9);
-	QuickSort<int, Comparer_ge<int>>(testData1, 0, 9);
-	QuickSort<int, Comparer_ge<int>>(testData2, 0, 9);
-	QuickSort<int, Comparer_ge<int>>(testData3, 0, 9);
-	QuickSort<int, Comparer_ge<int>>(testData4, 0, 9);
-	QuickSort<int, Comparer_ge<int>>(testData5, 0, 9);
+// 	QuickSort<int, Comparer_ge<int>>(testData, 0, 9);
+// 	QuickSort<int, Comparer_ge<int>>(testData1, 0, 9);
+// 	QuickSort<int, Comparer_ge<int>>(testData2, 0, 9);
+// 	QuickSort<int, Comparer_ge<int>>(testData3, 0, 9);
+// 	QuickSort<int, Comparer_ge<int>>(testData4, 0, 9);
+// 	QuickSort<int, Comparer_ge<int>>(testData5, 0, 9);
 
-	QuickSort_EqualRegion<int, Comparer_less<int>>(testData, 0, 9);
-	QuickSort_EqualRegion<int, Comparer_less<int>>(testData1, 0, 9);
-	QuickSort_EqualRegion<int, Comparer_less<int>>(testData2, 0, 9);
-	QuickSort_EqualRegion<int, Comparer_less<int>>(testData3, 0, 9);
-	QuickSort_EqualRegion<int, Comparer_less<int>>(testData4, 0, 9);
-	QuickSort_EqualRegion<int, Comparer_less<int>>(testData5, 0, 9);
+	std::vector<int> tdVec0(10);
+	memcpy(&tdVec0[0], testData, sizeof(int)*10);
+	QuickSort<std::vector<int>::iterator, Comparer_ge<int>>(tdVec0.begin(), tdVec0.end()-1);
+	std::vector<int> tdVec1(10);
+	memcpy(&tdVec1[0], testData1, sizeof(int)*10);
+	QuickSort<std::vector<int>::iterator, Comparer_ge<int>>(tdVec1.begin(), tdVec1.end()-1);
+	std::vector<int> tdVec2(10);
+	memcpy(&tdVec2[0], testData2, sizeof(int)*10);
+	QuickSort<std::vector<int>::iterator, Comparer_ge<int>>(tdVec2.begin(), tdVec2.end()-1);
+	std::vector<int> tdVec3(10);
+	memcpy(&tdVec3[0], testData3, sizeof(int)*10);
+	QuickSort<std::vector<int>::iterator, Comparer_ge<int>>(tdVec3.begin(), tdVec3.end()-1);
+	std::vector<int> tdVec4(10);
+	memcpy(&tdVec4[0], testData4, sizeof(int)*10);
+	QuickSort<std::vector<int>::iterator, Comparer_ge<int>>(tdVec4.begin(), tdVec4.end()-1);
+	std::vector<int> tdVec5(10);
+	memcpy(&tdVec5[0], testData5, sizeof(int)*10);
+	QuickSort<std::vector<int>::iterator, Comparer_ge<int>>(tdVec5.begin(), tdVec5.end()-1);
+
+	std::vector<int> randData;
+	for(int i=0; i<1000; i++)
+	{
+		randData.push_back(rand(1, 800));
+	}
+	QuickSort<std::vector<int>::iterator, Comparer_ge<int>>(randData.begin(), randData.end()-1);
+	int last = -1;
+	for (int i=0; i<randData.size(); i++)
+	{
+		if(last!=-1)
+			assert(randData[i]<=last);
+		last = randData[i];
+	}
+
+// 	QuickSort_EqualRegion<int, Comparer_less<int>>(testData, 0, 9);
+// 	QuickSort_EqualRegion<int, Comparer_less<int>>(testData1, 0, 9);
+// 	QuickSort_EqualRegion<int, Comparer_less<int>>(testData2, 0, 9);
+// 	QuickSort_EqualRegion<int, Comparer_less<int>>(testData3, 0, 9);
+// 	QuickSort_EqualRegion<int, Comparer_less<int>>(testData4, 0, 9);
+// 	QuickSort_EqualRegion<int, Comparer_less<int>>(testData5, 0, 9);
 #else	
 	
 	QuickSort_EqualRegion(testData, 0, 9);
